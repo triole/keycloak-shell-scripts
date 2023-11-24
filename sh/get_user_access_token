@@ -1,0 +1,17 @@
+#!/bin/bash
+scriptdir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source "${scriptdir}/_lib.sh" $@
+
+curl -sL -X POST "${KEYCLOAK_OIDC_URL}/token" \
+  -H "Content-Type: application/x-www-form-urlencoded" \
+  -d "client_id=${USER_CLIENT_ID}" \
+  -d "username=${USER_NAME}" \
+  -d "password=${USER_PASS}" \
+  -d "grant_type=password" |
+  jq -r ".access_token"
+
+if [[ "${decode}" == "true" ]]; then
+  echo "${access_token}" | "${scriptdir}/decode_token"
+else
+  echo "${access_token}"
+fi
