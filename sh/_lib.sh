@@ -8,7 +8,7 @@ decode="false"
 dryrun="false"
 verbose="false"
 conf_arg="conf"
-for val in "$@"; do
+for val in "${@}"; do
   if [[ "${val}" =~ ^([0-9a-zA-Z]+)$ ]]; then
     conf_arg="${val}"
   fi
@@ -40,11 +40,20 @@ discover_endpoint() {
   api_info | jq -r "${1}"
 }
 
-decode_token() {
-  read inp
-  for el in $(echo "${inp}" | sed "s|\.| |g"); do
-    echo -n "${el}" | base64 -di | jq
-  done
+display() {
+  arg1="${1}"
+  arg2="${2}"
+  if [[ "${decode}" == "true" ]]; then
+    for el in $(echo "${arg1}" | sed "s|\.| |g"); do
+      echo -n "${el}" | base64 -di | jq
+    done
+  else
+    if [[ "${arg2}" == "-f" ]]; then
+      echo "${arg1}" | jq
+    else
+      echo "${arg1}"
+    fi
+  fi
 }
 
 gk() {

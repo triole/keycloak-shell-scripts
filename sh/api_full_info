@@ -2,6 +2,9 @@
 scriptdir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "${scriptdir}/_lib.sh" $@
 
-curl -sL \-X GET \
-  ${KEYCLOAK_HOST}/realms/${KEYCLOAK_REALM}/.well-known/openid-configuration |
-  jq
+response="$(
+  curl -sL \-X GET \
+    ${KEYCLOAK_HOST}/realms/${KEYCLOAK_REALM}/.well-known/openid-configuration
+)"
+
+display "${response}" -f
