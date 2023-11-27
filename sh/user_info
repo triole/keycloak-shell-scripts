@@ -2,7 +2,7 @@
 scriptdir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "${scriptdir}/_lib.sh" $@
 
-access_token="$(${scriptdir}/get_user_access_token)"
+access_token="$(get_user_access_token)"
 
 curl -Ls -X GET "${KEYCLOAK_HOST}/admin/realms/${KEYCLOAK_REALM}/users/?username=${USER_NAME}&exact=true" \
   -H "Content-Type: application/json" \
