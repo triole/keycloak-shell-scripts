@@ -4,6 +4,6 @@ source "${scriptdir}/_lib.sh" $@
 
 access_token="$(get_user_access_token)"
 
-curl -Ls -X GET "${KEYCLOAK_HOST}/admin/realms/${KEYCLOAK_REALM}/users/?username=${USER_NAME}&exact=true" \
+curl -Ls -X GET "${KEYCLOAK_HOST}/admin/realms/${KEYCLOAK_REALM}/users/?username=${USER_NAME}" \
   -H "Content-Type: application/json" \
   -H "Authorization: bearer ${access_token}" | jq

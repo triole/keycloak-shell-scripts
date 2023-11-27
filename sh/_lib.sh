@@ -30,6 +30,23 @@ for val in "$@"; do
   fi
 done
 
+api_info() {
+  curl -sL \-X GET \
+    ${KEYCLOAK_HOST}/realms/${KEYCLOAK_REALM}/.well-known/openid-configuration |
+    jq
+}
+
+discover_endpoint() {
+  api_info | jq -r "${1}"
+}
+
+decode_token() {
+  read inp
+  for el in $(echo "${inp}" | sed "s|\.| |g"); do
+    echo -n "${el}" | base64 -di | jq
+  done
+}
+
 gk() {
   stoml "${conf}" "${1}" | envsubst
 }
@@ -60,3 +77,6 @@ export CLIENT_SECRET="$(gk client.secret)"
 export USER_NAME="$(gk user.name)"
 export USER_PASS="$(gk user.pass)"
 export USER_CLIENT_ID="$(gk user.client_id)"
+
+export ENDPOINT_USERINFO="$(discover_endpoint ".userinfo_endpoint")"
+export ENDPOINT_TOKEN="$(discover_endpoint ".token_endpoint")"

@@ -3,7 +3,7 @@ scriptdir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "${scriptdir}/_lib.sh" $@
 
 access_token="$(
-  curl -sL -X POST "${KEYCLOAK_OIDC_URL}/token" \
+  curl -sL -X POST "${ENDPOINT_TOKEN}" \
     -H "Content-Type: application/x-www-form-urlencoded" \
     -d "client_id=${CLIENT_ID}" \
     -d "client_secret=${CLIENT_SECRET}" \
@@ -12,7 +12,7 @@ access_token="$(
 )"
 
 if [[ "${decode}" == "true" ]]; then
-  echo "${access_token}" | "${scriptdir}/decode_token"
+  echo "${access_token}" | decode_token
 else
   echo "${access_token}"
 fi
