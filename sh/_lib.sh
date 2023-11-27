@@ -43,6 +43,9 @@ discover_endpoint() {
 display() {
   arg1="${1}"
   arg2="${2}"
+  if [[ "${verbose}" == "true" ]]; then
+    header "display token"
+  fi
   if [[ "${decode}" == "true" ]]; then
     for el in $(echo "${arg1}" | sed "s|\.| |g"); do
       echo -n "${el}" | base64 -di | jq
@@ -54,6 +57,7 @@ display() {
       echo "${arg1}"
     fi
   fi
+  echo ""
 }
 
 gk() {
@@ -74,18 +78,22 @@ if [[ ! -f "${conf}" || -z "${conf}" ]]; then
   exit 1
 fi
 
-if [[ "${verbose}" == "true" ]]; then
-  header "read config: ${conf}"
-fi
-
 export KEYCLOAK_REALM="$(gk keycloak.realm)"
 export KEYCLOAK_HOST="$(gk keycloak.host)"
-export KEYCLOAK_OIDC_URL="$(gk keycloak.oidc_url)"
 export CLIENT_ID="$(gk client.id)"
 export CLIENT_SECRET="$(gk client.secret)"
 export USER_NAME="$(gk user.name)"
 export USER_PASS="$(gk user.pass)"
 export USER_CLIENT_ID="$(gk user.client_id)"
-
 export ENDPOINT_USERINFO="$(discover_endpoint ".userinfo_endpoint")"
 export ENDPOINT_TOKEN="$(discover_endpoint ".token_endpoint")"
+
+if [[ "${verbose}" == "true" ]]; then
+  header "read config ${conf}"
+  {
+    env | grep -E "^KEYCLOAK_"
+    env | grep -E "^CLIENT_"
+    env | grep -E "^USER_"
+    env | grep -E "^ENDPOINT_"
+  } | sort
+fi
