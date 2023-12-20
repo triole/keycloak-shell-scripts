@@ -1,8 +1,6 @@
 [keycloak]
 realm = "master"
 host = "https://my-keycloak.idp:4444"
-oidc_url = "${KEYCLOAK_HOST}/realms/${KEYCLOAK_REALM}/protocol/openid-connect"
-
 
 [client]
 id = "client_id"
