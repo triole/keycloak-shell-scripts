@@ -1,5 +1,13 @@
 # Keycloak Shell Scripts
 
+<!-- toc -->
+
+- [Keycloak Client Config](#keycloak-client-config)
+- [Create configuration toml](#create-configuration-toml)
+- [Run scripts](#run-scripts)
+
+<!-- /toc -->
+
 ## Keycloak Client Config
 
 In order to be able to retrieve tokens via curl the client's configuration in Keycloak needs to be set up accordingly. Make sure `Client authentication` is off and enable `Direct access grants` as seen below.
