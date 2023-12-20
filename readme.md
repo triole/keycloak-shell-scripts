@@ -12,7 +12,7 @@ Create a configuration toml inside the `configs` folder. Use `examples/conf.toml
 
 # Run scripts
 
-The scripts are located inside the `sh` folder. If you have multiple configuration files inside `configs` you can use a positional argument to make use of the correct toml file. The first file that contains the given substring is used.
+The scripts are located inside the `sh` folder. If you have multiple configuration files inside `configs` you can use a positional argument to make use of the correct toml file. The first file name that contains the given substring is used.
 
 ```shell
 # display help
