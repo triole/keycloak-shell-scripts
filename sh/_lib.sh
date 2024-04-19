@@ -30,16 +30,6 @@ for val in "${@}"; do
   fi
 done
 
-api_info() {
-  curl -sL \-X GET \
-    ${KEYCLOAK_HOST}/realms/${KEYCLOAK_REALM}/.well-known/openid-configuration |
-    jq
-}
-
-discover_endpoint() {
-  api_info | jq -r "${1}"
-}
-
 display() {
   arg1="${1}"
   arg2="${2}"
@@ -60,6 +50,17 @@ display() {
   echo ""
 }
 
+conf="$(
+  find "${confdir}" -mindepth 1 -maxdepth 1 |
+    grep -Eo "${confdir}\/.*${conf_arg}.*\.toml$" |
+    sort | head -n 1
+)"
+
+if [[ ! -f "${conf}" ]]; then
+  echo -e "\n[error] config file not found, failed lookup was \"${conf_arg}\"\n"
+  exit 1
+fi
+
 gk() {
   stoml "${conf}" "${1}" | envsubst
 }
@@ -73,31 +74,30 @@ if [[ -z "${conf_arg}" ]]; then
   exit 1
 fi
 
-conf="$(
-  find "${confdir}" -mindepth 1 -maxdepth 1 -regex "\/.*${conf_arg}.*\.toml$" |
-    sort | head -n 1
-)"
-
-if [[ ! -f "${conf}" ]]; then
-  echo -e "\n[error] config file not found, failed lookup was \"${conf_arg}\"\n"
-  exit 1
-fi
-
-export KEYCLOAK_REALM="$(gk keycloak.realm)"
-export KEYCLOAK_HOST="$(gk keycloak.host)"
+export IDP_REALM="$(gk idp.realm)"
+export IDP_HOST="$(gk idp.host)"
+export IDP_WELL_KNOWN="${IDP_HOST}/${IDP_REALM}/.well-known/openid-configuration"
 export CLIENT_ID="$(gk client.id)"
 export CLIENT_SECRET="$(gk client.secret)"
 export USER_NAME="$(gk user.name)"
 export USER_PASS="$(gk user.pass)"
 export USER_CLIENT_ID="$(gk user.client_id)"
+
+api_info() {
+  curl -sL \-X GET ${IDP_WELL_KNOWN} | jq
+}
+
+discover_endpoint() {
+  api_info | jq -r "${1}"
+}
+
 export ENDPOINT_USERINFO="$(discover_endpoint ".userinfo_endpoint")"
 export ENDPOINT_TOKEN="$(discover_endpoint ".token_endpoint")"
-export WELL_KNOWN="$(gk "well_known.url")"
 
 if [[ "${verbose}" == "true" ]]; then
   header "read config ${conf}"
   {
-    env | grep -E "^KEYCLOAK_"
+    env | grep -E "^IDP_"
     env | grep -E "^CLIENT_"
     env | grep -E "^USER_"
     env | grep -E "^ENDPOINT_"

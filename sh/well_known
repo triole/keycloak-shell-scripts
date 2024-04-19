@@ -2,9 +2,6 @@
 scriptdir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "${scriptdir}/_lib.sh" $@
 
-response="$(
-  curl -sL \-X GET \
-    ${WELL_KNOWN}
-)"
+api_info
 
 display "${response}" -f
