@@ -1,6 +1,6 @@
 scriptdir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 basedir=$(echo "${scriptdir}" | grep -Po ".*(?=\/)")
-confdir="${basedir}/configs"
+confdir="${basedir}/conf"
 
 export PATH="${PATH}:${scriptdir}"
 
@@ -76,7 +76,7 @@ fi
 
 export IDP_REALM="$(gk idp.realm)"
 export IDP_HOST="$(gk idp.host)"
-export IDP_WELL_KNOWN="${IDP_HOST}/${IDP_REALM}/.well-known/openid-configuration"
+export IDP_WELL_KNOWN="$(gk idp.well_known)"
 export CLIENT_ID="$(gk client.id)"
 export CLIENT_SECRET="$(gk client.secret)"
 export USER_NAME="$(gk user.name)"
