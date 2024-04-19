@@ -7,7 +7,7 @@ export PATH="${PATH}:${scriptdir}"
 decode="false"
 dryrun="false"
 verbose="false"
-conf_arg="conf"
+conf_arg=""
 for val in "${@}"; do
   if [[ "${val}" =~ ^([0-9a-zA-Z]+)$ ]]; then
     conf_arg="${val}"
@@ -68,12 +68,17 @@ header() {
   echo -e "\n\033[0;93m${@}\033[0m"
 }
 
+if [[ -z "${conf_arg}" ]]; then
+  echo -e "\n[error] config arg required to be able to look up config file\n"
+  exit 1
+fi
+
 conf="$(
   find "${confdir}" -mindepth 1 -maxdepth 1 -regex "\/.*${conf_arg}.*\.toml$" |
     sort | head -n 1
 )"
 
-if [[ ! -f "${conf}" || -z "${conf}" ]]; then
+if [[ ! -f "${conf}" ]]; then
   echo -e "\n[error] config file not found, failed lookup was \"${conf_arg}\"\n"
   exit 1
 fi
@@ -87,6 +92,7 @@ export USER_PASS="$(gk user.pass)"
 export USER_CLIENT_ID="$(gk user.client_id)"
 export ENDPOINT_USERINFO="$(discover_endpoint ".userinfo_endpoint")"
 export ENDPOINT_TOKEN="$(discover_endpoint ".token_endpoint")"
+export WELL_KNOWN="$(gk "well_known.url")"
 
 if [[ "${verbose}" == "true" ]]; then
   header "read config ${conf}"

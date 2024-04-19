@@ -7,9 +7,9 @@ response="$(
     -H "Content-Type: application/x-www-form-urlencoded" \
     -d "client_id=${USER_CLIENT_ID}" \
     -d "username=${USER_NAME}" \
+    -d "user_id=${USER_NAME}" \
     -d "password=${USER_PASS}" \
-    -d "grant_type=password" |
-    jq -c -r ".access_token"
+    -d "grant_type=password"
 )"
 
 display "${response}"

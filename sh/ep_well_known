@@ -4,7 +4,7 @@ source "${scriptdir}/_lib.sh" $@
 
 response="$(
   curl -sL \-X GET \
-    ${KEYCLOAK_HOST}/realms/${KEYCLOAK_REALM}/.well-known/openid-configuration
+    ${WELL_KNOWN}
 )"
 
 display "${response}" -f
