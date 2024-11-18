@@ -5,6 +5,7 @@ source "${scriptdir}/_lib.sh" $@
 params=""
 params+="client_id=${USER_CLIENT_ID}"
 params+="&client_secret=${CLIENT_SECRET}"
+params+="&scope=${CLIENT_SCOPE}"
 params+="&username=${USER_NAME}"
 params+="&user_id=${USER_NAME}"
 params+="&password=${USER_PASS}"

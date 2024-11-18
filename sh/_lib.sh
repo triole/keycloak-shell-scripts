@@ -4,7 +4,6 @@ confdir="${basedir}/conf"
 
 export PATH="${PATH}:${scriptdir}"
 
-decode="false"
 dryrun="false"
 verbose="false"
 conf_arg=""
@@ -12,12 +11,15 @@ for val in "${@}"; do
   if [[ "${val}" =~ ^([0-9a-zA-Z]+)$ ]]; then
     conf_arg="${val}"
   fi
+  if [[ "${val}" =~ ^-+(n|dry-run)$ ]]; then
+    dryrun="true"
+  fi
   if [[ "${val}" =~ ^-+(v|verbose)$ ]]; then
     verbose="true"
   fi
   if [[ "${val}" =~ ^-+(h|help)$ ]]; then
     echo -e "\nargs"
-    echo "  -d/--decode   decode token before displaying"
+    echo "  -n/--dry run"
     echo "  -v/--verbose  verbose mode"
     echo ""
     exit 0
@@ -53,6 +55,7 @@ export IDP_HOST="$(gk idp.host)"
 export IDP_WELL_KNOWN="$(gk idp.well_known)"
 export CLIENT_ID="$(gk client.id)"
 export CLIENT_SECRET="$(gk client.secret)"
+export CLIENT_SCOPE="$(gk client.scope)"
 export USER_NAME="$(gk user.name)"
 export USER_PASS="$(gk user.pass)"
 export USER_CLIENT_ID="$(gk client.id)"
@@ -79,12 +82,12 @@ if [[ "${verbose}" == "true" ]]; then
 fi
 
 _rcmd() {
-  cmd=${@}
+  cmd="${@}"
   if [[ "${verbose}" == "true" ]]; then
     echo -e "\033[0;93m${cmd}\033[0m"
   fi
   if [[ "${dryrun}" == "false" ]]; then
-    eval ${cmd}
+    eval "${cmd}"
   fi
 }
 

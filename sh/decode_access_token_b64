@@ -1,0 +1,10 @@
+#!/bin/bash
+
+read inp
+
+for el in $(echo "${inp}" | jq -r ".access_token" | sed "s|\.| |g"); do
+  if [[ "${verbose}" == "true" ]]; then
+    echo -e "\n\033[0;93m${el}\033[0m"
+  fi
+  echo -n "${el}" | base64 -di | jq
+done
