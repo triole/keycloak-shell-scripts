@@ -12,12 +12,6 @@ for val in "${@}"; do
   if [[ "${val}" =~ ^([0-9a-zA-Z]+)$ ]]; then
     conf_arg="${val}"
   fi
-  if [[ "${val}" =~ ^-+(d|decode)$ ]]; then
-    decode="true"
-  fi
-  if [[ "${val}" =~ ^-+(n|dryrun)$ ]]; then
-    dryrun="true"
-  fi
   if [[ "${val}" =~ ^-+(v|verbose)$ ]]; then
     verbose="true"
   fi
@@ -29,26 +23,6 @@ for val in "${@}"; do
     exit 0
   fi
 done
-
-display() {
-  arg1="${1}"
-  arg2="${2}"
-  if [[ "${verbose}" == "true" ]]; then
-    header "display token"
-  fi
-  if [[ "${decode}" == "true" ]]; then
-    for el in $(echo "${arg1}" | sed "s|\.| |g"); do
-      echo -n "${el}" | base64 -di | jq
-    done
-  else
-    if [[ "${arg2}" == "-f" ]]; then
-      echo "${arg1}" | jq
-    else
-      echo "${arg1}"
-    fi
-  fi
-  echo ""
-}
 
 conf="$(
   find "${confdir}" -mindepth 1 -maxdepth 1 |
@@ -81,10 +55,10 @@ export CLIENT_ID="$(gk client.id)"
 export CLIENT_SECRET="$(gk client.secret)"
 export USER_NAME="$(gk user.name)"
 export USER_PASS="$(gk user.pass)"
-export USER_CLIENT_ID="$(gk user.client_id)"
+export USER_CLIENT_ID="$(gk client.id)"
 
 api_info() {
-  curl -sL \-X GET ${IDP_WELL_KNOWN} | jq
+  curl -sL -X GET ${IDP_WELL_KNOWN} | jq
 }
 
 discover_endpoint() {
@@ -103,3 +77,17 @@ if [[ "${verbose}" == "true" ]]; then
     env | grep -E "^ENDPOINT_"
   } | sort
 fi
+
+_rcmd() {
+  cmd=${@}
+  if [[ "${verbose}" == "true" ]]; then
+    echo -e "\033[0;93m${cmd}\033[0m"
+  fi
+  if [[ "${dryrun}" == "false" ]]; then
+    eval ${cmd}
+  fi
+}
+
+req() {
+  _rcmd "curl -sL -X POST \"${ENDPOINT_TOKEN}\" -d \"${params}\""
+}

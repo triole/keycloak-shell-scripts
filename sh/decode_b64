@@ -1,0 +1,7 @@
+#!/bin/bash
+
+read inp
+
+for el in $(echo "${inp}" | sed "s|\.| |g"); do
+  echo -n "${el}" | base64 -di | jq
+done

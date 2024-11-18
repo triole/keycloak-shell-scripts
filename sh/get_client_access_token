@@ -2,12 +2,9 @@
 scriptdir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "${scriptdir}/_lib.sh" $@
 
-response="$(
-  curl -sL -X POST "${ENDPOINT_TOKEN}" \
-    -H "Content-Type: application/x-www-form-urlencoded" \
-    -d "client_id=${CLIENT_ID}" \
-    -d "client_secret=${CLIENT_SECRET}" \
-    -d "grant_type=client_credentials"
-)"
+params=""
+params+="client_id=${CLIENT_ID}"
+params+="&client_secret=${CLIENT_SECRET}"
+params+="&grant_type=client_credentials"
 
-display "${response}"
+req "${params}"

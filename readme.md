@@ -5,6 +5,8 @@
 - [Keycloak Client Config](#keycloak-client-config)
 - [Create configuration toml](#create-configuration-toml)
 - [Run scripts](#run-scripts)
+- [General remarks](#general-remarks)
+- [Decode Base64](#decode-base64)
 
 <!-- /toc -->
 
@@ -30,5 +32,11 @@ sh/get_user_access_token --help
 sh/get_user_access_token myconf
 
 # retrieve and decode client access token, verbose mode
-sh/get_client_access_token anotherconf -v -d
+sh/get_client_access_token anotherconf -v
 ```
+
+## General remarks
+
+## Decode Base64
+
+Use `| base64 -di` to decode base64 strings in shell. Or in the script like `sh/get_user_access_token admin | jq .access_token | sh/decode_token`.
